@@ -6,12 +6,13 @@
  * Time: 11:28
  */
 
-namespace app\Livechat\Controller;
+namespace app\livechat\controller;
 
 
 class Request
 {
     /**
+     * @return string
      * @throws \Exception
      */
     public function index() {

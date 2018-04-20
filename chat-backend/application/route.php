@@ -10,7 +10,7 @@
 // +----------------------------------------------------------------------
 
 use think\Route;
-Route::rule('request', 'application/livechat/Controller/Request/index');
+Route::rule('request', 'livechat/Request/index');
 
 return [
     'url_route_on'  =>  true,

@@ -8,8 +8,8 @@
 
 namespace app\Livechat\Controller;
 
-use app\gatewayworker\Model\UserModel;
-use app\gatewayworker\Model\GroupModel;
+use app\livechat\Model\UserModel;
+use app\livechat\Model\GroupModel;
 
 class ListManager
 {
@@ -27,13 +27,11 @@ class ListManager
         $groupModel = new GroupModel();
         self::mine($uuid, $return, $userModel);
         self::friend($uuid, $return, $userModel);
-        self::group($uuid, $return, $groupModel);
-        $userModel -> close();
-        $groupModel -> close();
+        self::group($uuid, $return, $userModel, $groupModel);
         return $return;
     }
 
-    private static function mine($uuid, $return, $userModel) {
+    private static function mine($uuid, &$return, $userModel) {
         $return['data']['mine'] = array(
             'username' => $userModel -> getUserName($uuid),
             'id' => $uuid,
@@ -43,11 +41,11 @@ class ListManager
         );
     }
 
-    private static function friend($uuid, $return, $userModel) {
+    private static function friend($uuid, &$return, $userModel) {
         $groups = $userModel -> getFriendGroup($userModel -> getUidByUuid($uuid));
         $count = 1;
         foreach ($groups as $foo) {
-            $friends = $userModel -> getFriendInGroup();
+            $friends = $userModel -> getFriendInGroup($userModel -> getUidByUuid($uuid), $foo);
             $list = array(
                 'groupname' => $foo,
                 'id' => $count,
@@ -55,7 +53,7 @@ class ListManager
                 'list' => []
             );
             foreach ($friends as $bar) {
-                array_push($list, array(
+                array_push($list['list'], array(
                         'username' => $userModel -> getUserName($userModel -> getUUidByUid($bar)),
                         'id' => $userModel -> getUUidByUid($bar),
                         "avatar" => '',
@@ -66,7 +64,7 @@ class ListManager
             array_push($return['data']['friend'], $list);
         }
     }
-    private static function group($uuid, $return, $userModel, $groupModel) {
+    private static function group($uuid, &$return, $userModel, $groupModel) {
         $groupIds = $groupModel -> getGroupsByUid($userModel -> getUidByUuid($uuid));
         foreach ($groupIds as $id) {
             $arr = array(

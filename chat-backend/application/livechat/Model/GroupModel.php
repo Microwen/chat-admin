@@ -2,9 +2,9 @@
 namespace app\livechat\Model;
 
 use think\Model;
-use Think\Db;
+use think\Db;
 
-class GroupModel extends Model {
+class GroupModel extends Model{
 
     /**
      * 创建组并返回组id
@@ -66,19 +66,10 @@ class GroupModel extends Model {
     }
 
     public function getGroupsByUid($uid) {
-        return $this -> db -> select('groupid,uid') -> from('user_to_group')
-            -> where('uid = :uid') ->bindValue('uid', $uid) -> query();
+        return Db::table('user_to_group') -> where('uid', $uid) -> column('groupid');
     }
 
     public function getGroupName($groupid) {
-        return $this -> db -> select('groupname,id') -> from('group')
-            -> where('id = :id') -> bindValue('id', $groupid) -> single();
-    }
-
-    /**
-     * 关闭数据库连接
-     */
-    public function close() {
-        Db::close('chat');
+        return Db::table('group') -> where('id', $groupid) -> value('groupname');
     }
 }

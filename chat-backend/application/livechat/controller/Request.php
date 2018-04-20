@@ -7,7 +7,7 @@
  */
 
 namespace app\livechat\controller;
-
+require_once __DIR__ . '/../../../vendor/workerman/workerman/Lib/Constants.php';
 
 class Request
 {
@@ -17,7 +17,7 @@ class Request
      */
     public function index() {
         $received = json_decode(base64_decode($_REQUEST['request']), true);
-        $this -> commander($received);
+        return $this -> commander($received);
     }
 
     /**
@@ -26,13 +26,12 @@ class Request
      * @throws \Exception
      */
     private function commander($received) {
-        switch ($received['type']) {
+        switch ($received["type"]) {
             case 'init':
                 ConnectManager::conn($received['client_id'], $received['uuid']);
                 break;
             case 'list':
-                ListManager::get($received['uuid']);
-                break;
+                return json_encode(ListManager::get($received['uuid']));
             case 'member':
                 MemberManager::get($received['groupid']);
                 break;

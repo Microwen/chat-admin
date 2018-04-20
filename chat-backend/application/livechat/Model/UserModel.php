@@ -2,15 +2,16 @@
 namespace app\livechat\Model;
 
 use think\Model;
-use Think\Db;
+use think\Db;
 
-class UserModel extends Model {
+class UserModel extends Model{
 
     /**
      * 创建用户
      * @param $arr array 用户数据(username & password必填，其他可选)
      * @return bool|mixed 返回false如果创建失败
      */
+
     public function addUser($arr){
         if (!empty($arr['username']) && !empty($arr['pwd'])) {
             $arr['create_time'] = date('Y-m-d H:m:s', time());
@@ -49,13 +50,11 @@ class UserModel extends Model {
      * @return string
      */
     public function getUidByUuid($uuid) {
-        return $this -> db -> select('uid,uuid') -> from('user_info')
-            -> where('uuid = :uuid') -> bindValue('uuid',  $uuid) ->single();
+        return Db::table('user_info')->where('uuid',$uuid) -> value('uid');
     }
 
     public function getUUidByUid($uid) {
-        return $this -> db -> select('uuid,uid') -> from('user_info')
-            -> where('uid = :uid') -> bindValue('uid',  $uid) ->single();
+        return Db::table('user_info')->where('uid',$uid) -> value('uuid');
     }
 
 
@@ -85,8 +84,7 @@ class UserModel extends Model {
      * @return string 用户名称
      */
     public function getUserName($uuid) {
-        return $this -> db -> select('username,uuid') -> from('user_info')
-            -> where('uuid = :uuid') -> bindValue('uuid', $uuid) -> single();
+        return Db::table('user_info')->where('uuid',$uuid)->value('username');
     }
 
     /**
@@ -99,23 +97,14 @@ class UserModel extends Model {
 
 
     public function getFriendGroup($uid) {
-        return $this -> db -> select('list2') -> distinct() -> from('user_to_user')
-            -> where('uid1 = :uid') ->bindValue('uid', $uid) -> union()
-            -> select('list1') -> from('user_to_user')
-            -> where('uid2 = :uid') -> bindValue('uid', $uid) ->query();
+        return array_merge(Db::table('user_to_user') -> distinct(true) -> where('uid1',$uid) -> column('list2'),
+            Db::table('user_to_user') -> distinct(true) -> where('uid2',$uid) -> column('list1')
+            );
     }
 
     public function getFriendInGroup($uid, $group) {
-        return $this -> db -> select('uid1,list1,uid2') -> from('user_to_user')
-            -> where('uid2 = uid and list1 = :group') -> bindValues(array('uid' => $uid, 'group' => $group)) -> union()
-            -> select('uid2,list2,uid1') -> from('user_to_user')
-            -> where('uid1 = uid and list2 = :group') -> bindValues(array('uid' => $uid, 'group' => $group)) -> single();
-    }
-
-    /**
-     * 关闭数据库连接
-     */
-    public function close() {
-        Db::close('chat');
+        return array_merge(Db::table('user_to_user') -> where('uid2', $uid) -> where('list1', $group) ->column('uid1'),
+            Db::table('user_to_user') -> where('uid1', $uid) -> where('list2', $group) ->column('uid2')
+        );
     }
 }

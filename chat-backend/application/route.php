@@ -9,7 +9,12 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
+use think\Route;
+Route::rule('request', 'application/livechat/Controller/Request/index');
+
 return [
+    'url_route_on'  =>  true,
+
     '__pattern__' => [
         'name' => '\w+',
     ],

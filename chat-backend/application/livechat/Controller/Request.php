@@ -8,9 +8,8 @@
 
 namespace app\Livechat\Controller;
 
-use think\Controller;
 
-class Request extends Controller
+class Request
 {
     /**
      * @throws \Exception

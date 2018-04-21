@@ -102,9 +102,8 @@ class UserModel extends Model{
             );
     }
 
-    public function getFriendInGroup($uid, $group) {
-        return array_merge(Db::table('user_to_user') -> where('uid2', $uid) -> where('list1', $group) ->column('uid1'),
-            Db::table('user_to_user') -> where('uid1', $uid) -> where('list2', $group) ->column('uid2')
-        );
+    public function getFriends($uid) {
+        return array_merge(Db::table('user_to_user') -> field('list2 as list,username,uuid') ->  where('uid1',$uid) -> join('user_info', 'uid2=uid') -> select(),
+            Db::table('user_to_user') -> field('list1 as list,username,uuid') ->  where('uid2',$uid) -> join('user_info', 'uid1=uid') -> select());
     }
 }

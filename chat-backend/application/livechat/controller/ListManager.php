@@ -25,9 +25,10 @@ class ListManager
         );
         $userModel = new UserModel();
         $groupModel = new GroupModel();
+        $uid = $userModel -> getUidByUuid($uuid);
         self::mine($uuid, $return, $userModel);
-        self::friend($uuid, $return, $userModel);
-        self::group($uuid, $return, $userModel, $groupModel);
+        self::friend($uid, $return, $userModel);
+        self::group($uid, $return, $groupModel);
         return $return;
     }
 
@@ -41,11 +42,11 @@ class ListManager
         );
     }
 
-    private static function friend($uuid, &$return, $userModel) {
-        $groups = $userModel -> getFriendGroup($userModel -> getUidByUuid($uuid));
+    private static function friend($uid, &$return, $userModel) {
+        $groups = $userModel -> getFriendGroup($uid);
+        $friends = $userModel -> getFriends($uid);
         $count = 1;
         foreach ($groups as $foo) {
-            $friends = $userModel -> getFriendInGroup($userModel -> getUidByUuid($uuid), $foo);
             $list = array(
                 'groupname' => $foo,
                 'id' => $count,
@@ -53,19 +54,23 @@ class ListManager
                 'list' => []
             );
             foreach ($friends as $bar) {
-                array_push($list['list'], array(
-                        'username' => $userModel -> getUserName($userModel -> getUUidByUid($bar)),
-                        'id' => $userModel -> getUUidByUid($bar),
-                        "avatar" => '',
-                        "sign" => ''
-                    )
-                );
+                if ($bar['list'] == $foo) {
+                    array_push($list['list'], array(
+                            'username' => $bar['username'],
+                            'id' => $bar['uuid'],
+                            "avatar" => '',
+                            "sign" => ''
+                        )
+                    );
+                }
             }
             array_push($return['data']['friend'], $list);
         }
     }
-    private static function group($uuid, &$return, $userModel, $groupModel) {
-        $groupIds = $groupModel -> getGroupsByUid($userModel -> getUidByUuid($uuid));
+
+    //TODO 优化group的查询
+    private static function group($uid, &$return, $groupModel) {
+        $groupIds = $groupModel -> getGroupsByUid($uid);
         foreach ($groupIds as $id) {
             $arr = array(
                 'groupname' => $groupModel -> getGroupName($id),

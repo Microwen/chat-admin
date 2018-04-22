@@ -50,7 +50,7 @@ class ListManager
             $list = array(
                 'groupname' => $foo,
                 'id' => $count,
-                'online' => 0,
+                'online' => 1,
                 'list' => []
             );
             foreach ($friends as $bar) {
@@ -68,13 +68,12 @@ class ListManager
         }
     }
 
-    //TODO 优化group的查询
     private static function group($uid, &$return, $groupModel) {
-        $groupIds = $groupModel -> getGroupsByUid($uid);
-        foreach ($groupIds as $id) {
+        $groups = $groupModel -> getGroupsByUid($uid);
+        foreach ($groups as $g) {
             $arr = array(
-                'groupname' => $groupModel -> getGroupName($id),
-                'id' => $id,
+                'groupname' => $g['groupname'],
+                'id' => $g['groupid'],
                 "avatar" => ''
             );
             array_push($return['data']['group'], $arr);

@@ -14,7 +14,7 @@ class GroupModel extends Model{
     public function createGroup($groupName) {
         $result = $this -> findGroup($groupName);
         if (!$result) {
-            $this -> db -> insert('group') -> cols(array('id' => "GP".time().rand(100, 999), 'gourpname' => $groupName)) -> query();
+            $this -> db -> insert('groups') -> cols(array('id' => "GP".time().rand(100, 999), 'gourpname' => $groupName)) -> query();
         }
         return $result;
     }
@@ -25,7 +25,7 @@ class GroupModel extends Model{
      * @return bool|string
      */
     public function findGroup($groupName) {
-        $result = $this -> db -> select('id,groupname') -> from('group')
+        $result = $this -> db -> select('id,groupname') -> from('groups')
             -> where('groupname = :groupName') -> bindValue('groupName', $groupName)
             -> single();
         if (empty($result)) {
@@ -66,10 +66,11 @@ class GroupModel extends Model{
     }
 
     public function getGroupsByUid($uid) {
-        return Db::table('user_to_group') -> where('uid', $uid) -> column('groupid');
+        $r = Db::table('user_to_group') -> field('groupid,groupname')-> where('uid', $uid) -> join('groups', 'groupid = gid') -> select();
+        return $r;
     }
 
     public function getGroupName($groupid) {
-        return Db::table('group') -> where('id', $groupid) -> value('groupname');
+        return Db::table('groups') -> where('gid', $groupid) -> value('groupname');
     }
 }

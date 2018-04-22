@@ -31,7 +31,7 @@ class Request
                 ConnectManager::conn($received['client_id'], $received['uuid']);
                 break;
             case 'list':
-                return json_encode(ListManager::get($received['uuid']));
+                return json(ListManager::get($received['uuid']));
             case 'member':
                 MemberManager::get($received['groupid']);
                 break;

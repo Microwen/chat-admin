@@ -38,7 +38,7 @@ class Request
             case 'hist':
                 break;
             case 'msg':
-                MsgManager::send($received['data']);
+                MsgManager::send($received);
                 break;
             case 'heart':
                 break;

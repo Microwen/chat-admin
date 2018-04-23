@@ -45,7 +45,7 @@ class GroupModel extends Model{
      * @throws \think\exception\DbException
      */
     public function getMembers($groupid) {
-        return Db::table('user_to_group') -> join('user_info', 'user_to_group.uid = user_info.uid', 'left') -> select();
+        return Db::table('user_to_group') -> join('user_info', "user_to_group.uid = user_info.uid", 'left') -> where('groupid', $groupid) -> select();
     }
 
     /**

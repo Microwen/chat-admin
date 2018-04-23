@@ -13,9 +13,12 @@ use think\Db;
 
 class MessageModel extends Model {
 
-
+    /**
+     * 保存未发消息
+     * @param $msg
+     */
     public function suspendMsg($msg) {
-        //TODO
+        Db::table('unsent_msg') -> insert($msg);
     }
 
     /**
@@ -23,7 +26,7 @@ class MessageModel extends Model {
      * @param $msg
      */
     public function saveMsg($msg) {
-        //TODO
+        Db::table('msg') ->insert($msg);
     }
 
     /**
@@ -33,9 +36,8 @@ class MessageModel extends Model {
      * @throws \Exception
      */
     public function getMsgByGroup($id) {
-        return $this -> db -> select('msg.id,groupid,msg.uid,username,msg,format,send_time') -> from('msg')
-            -> leftJoin('user_info', 'msg.uid = user_info.uuid')
-            -> where('groupid = :id') -> bindValue('id', $id) -> orderByASC(array('msg.id')) -> query();
+        Db::table('msg') -> field('msg.id,groupid,msg.uid,username,msg,format,send_time') -> join('user_info', 'msg.uid = user_info.uuid', 'left')
+            -> where('groupid', $id) -> order('msg.id', 'asc') -> select();
     }
 
 }

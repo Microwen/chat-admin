@@ -8,8 +8,12 @@
 
 namespace app\Livechat\Controller;
 
+require_once __DIR__.'/../../../vendor/workerman/gatewayclient/Gateway.php';
+use GatewayClient\Gateway;
 use app\gatewayworker\Model\UserModel;
 use app\gatewayworker\Model\GroupModel;
+
+
 class ConnectManager
 {
     /**
@@ -18,6 +22,7 @@ class ConnectManager
      * @throws \Exception
      */
     public static function conn($client_id, $uuid) {
+        Gateway::$registerAddress = '127.0.0.1:1238';
         $userModel = new UserModel();
         $groupModel = new GroupModel();
         Gateway::bindUid($client_id, $uuid);
@@ -31,5 +36,7 @@ class ConnectManager
         foreach ($groupModel -> getGroupsByUid($userModel -> getUidByUuid($uuid)) as $v) {
             Gateway::joinGroup($client_id, $v);
         }
+
+        //TODO retrieve unsent message
     }
 }

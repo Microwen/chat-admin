@@ -7,12 +7,12 @@ use think\Db;
 class GroupModel extends Model{
 
     /**
-     * 创建组并返回组id
+     * 创建群并返回组id
      * @param $groupName
      * @return string
      */
     public function createGroup($groupName) {
-        $result = $this -> findGroup($groupName);
+        $result = $this -> findGroupId($groupName);
         if (!$result) {
             $this -> db -> insert('groups') -> cols(array('id' => "GP".time().rand(100, 999), 'gourpname' => $groupName)) -> query();
         }
@@ -20,54 +20,43 @@ class GroupModel extends Model{
     }
 
     /**
-     * 查找根据组名查找组id
+     * 查找根据群名查找组id
      * @param $groupName
      * @return bool|string
      */
-    public function findGroup($groupName) {
-        $result = $this -> db -> select('id,groupname') -> from('groups')
-            -> where('groupname = :groupName') -> bindValue('groupName', $groupName)
-            -> single();
-        if (empty($result)) {
-            return false;
-        } else {
-            return $result;
-        }
+    public function findGroupId($groupName) {
+        //TODO
+//        $result = $this -> db -> select('id,groupname') -> from('groups')
+//            -> where('groupname = :groupName') -> bindValue('groupName', $groupName)
+//            -> single();
+//        if (empty($result)) {
+//            return false;
+//        } else {
+//            return $result;
+//        }
     }
 
     /**
-     * 保存用户聊天记录
-     * @param $msg
+     * 根据群id取回所有在组里的用户
+     * @param $groupid
+     * @return false|\PDOStatement|string|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
-    public function saveMsg($msg) {
-        $this -> db -> insert('msg') -> cols($msg) -> query();
+    public function getMembers($groupid) {
+        return Db::table('user_to_group') -> join('user_info', 'user_to_group.uid = user_info.uid', 'left') -> select();
     }
 
     /**
-     * 根据组id取回组聊天记录
-     * @param $id
-     * @return mixed
-     * @throws \Exception
+     * @param $uid
+     * @return false|\PDOStatement|string|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
-    public function getMsgByGroup($id) {
-        return $this -> db -> select('msg.id,groupid,msg.uid,username,msg,format,send_time') -> from('msg')
-            -> leftJoin('user_info', 'msg.uid = user_info.uuid')
-            -> where('groupid = :id') -> bindValue('id', $id) -> orderByASC(array('msg.id')) -> query();
-    }
-
-    /**
-     * 根据组id取回所有在组里的用户id
-     * @param $id
-     * @return mixed
-     */
-    public function getUserByGroup($groupid) {
-        return $this -> db -> select('uid,groupid') -> from('user_to_group')
-            -> where('groupid = :groupid') -> bindValue('groupid', $groupid) -> query();
-    }
-
     public function getGroupsByUid($uid) {
-        $r = Db::table('user_to_group') -> field('groupid,groupname')-> where('uid', $uid) -> join('groups', 'groupid = gid') -> select();
-        return $r;
+        return Db::table('user_to_group') -> field('groupid,groupname')-> where('uid', $uid) -> join('groups', 'groupid = gid') -> select();
     }
 
     public function getGroupName($groupid) {

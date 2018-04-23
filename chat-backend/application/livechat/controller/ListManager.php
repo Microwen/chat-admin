@@ -37,8 +37,8 @@ class ListManager
             'username' => $userModel -> getUserName($uuid),
             'id' => $uuid,
             "status" => "online",
-            "sign" => '',
-            "avatar" => ''
+            "sign" => '', //TODO
+            "avatar" => '' //TODO
         );
     }
 
@@ -50,7 +50,7 @@ class ListManager
             $list = array(
                 'groupname' => $foo,
                 'id' => $count,
-                'online' => 1,
+                'online' => 1, //TODO
                 'list' => []
             );
             foreach ($friends as $bar) {
@@ -58,8 +58,8 @@ class ListManager
                     array_push($list['list'], array(
                             'username' => $bar['username'],
                             'id' => $bar['uuid'],
-                            "avatar" => '',
-                            "sign" => ''
+                            "avatar" => '', //TODO
+                            "sign" => '' //TODO
                         )
                     );
                 }
@@ -74,7 +74,7 @@ class ListManager
             $arr = array(
                 'groupname' => $g['groupname'],
                 'id' => $g['groupid'],
-                "avatar" => ''
+                "avatar" => ''//TODO
             );
             array_push($return['data']['group'], $arr);
         }

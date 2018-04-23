@@ -7,10 +7,11 @@
  */
 namespace app\Livechat\Controller;
 
-use \GatewayWorker\Lib\Gateway;
-use app\gatewayworker\Model\GroupModel;
-use app\gatewayworker\Model\UserModel;
-
+require_once __DIR__.'/../../../vendor/workerman/gatewayclient/Gateway.php';
+use GatewayClient\Gateway;
+use app\livechat\Model\GroupModel;
+use app\livechat\Model\UserModel;
+use app\livechat\Model\MessageModel;
 class MsgManager
 {
     /**
@@ -18,38 +19,63 @@ class MsgManager
      * @param $where
      * @throws \Exception
      */
-    public static function send($msg, $where) {
+    public static function send($msg) {
+        Gateway::$registerAddress = '127.0.0.1:1238';
         $buff = array();
         $groupModel = new GroupModel();
         $userModel = new UserModel();
-        $buff['content'] = $msg['content'];
+        $msgModel = new MessageModel();
+        $buff['username'] = $msg['mine']['username'];
+        $buff['avatar'] = $msg['mine']['avatar'];
+        $buff['type'] = $msg['to']['type'];
+        $buff['content'] = $msg['mine']['content'];
         $buff['timestamp'] = time() * 1000;
-        switch ($where) {
-            case 'group':
-                $buff['username'] = $userModel -> getUserName($buff['fromid']);
-                $buff['type'] = 'group';
-                $buff['fromid'] = $msg['uuid'];
-                $buff['id'] = $msg['gid'];
-                Gateway::sendToGroup($msg['gid'], json_encode($buff));
-                break;
-            case 'client':
-                $buff['username'] = $userModel -> getUserName($buff['uuid']);
-                $buff['type'] = 'friend';
-                $buff['id'] = $msg['uuid'];
-                Gateway::sendToUid($msg['id'], json_encode($buff));
-                break;
+        if (!strcmp($msg['to']['type'], 'group')) {
+            $buff['fromid'] = $msg['mine']['id'];
+            $buff['id'] = $groupModel -> findGroupId($msg['to']['groupname']);
+            Gateway::sendToGroup($buff['id'], json_encode($buff));
+            foreach ($groupModel -> getMembers($buff['id']) as $m) {
+                if (!Gateway::isUidOnline($m['uuid'])) {
+                    self::suspend($buff, $m['uuid'], $msgModel);
+                }
+            }
+        } else {
+            $buff['id'] = $msg['mine']['id'];
+            if (Gateway::isUidOnline($msg['to']['id'])){
+                Gateway::sendToUid($msg['to']['id'], json_encode($buff));
+            } else {
+                self::suspend($buff, $msg['to']['id'], $msgModel);
+            }
         }
-        $groupModel -> saveMsg(
+        $msgModel -> saveMsg(
+            //TODO
             array(
-                'groupid' => $groupModel -> findGroup($msg['group']),
-                'uid' => $userModel -> getUidByUuid($msg['uuid']),
-                'msg' => $msg['msg'],
-                'format' => $msg['format'],
-                'send_time' => date('Y-m-d H:m:s', time())
+                'type' => $buff['type'],
+                'uid' => '',
+                'rec_uid' => '',
+                'groupid' => '',
+                'msg' => $msg['mine']['content'],
+                'format' => 'txt',
+                'send_time' => $buff['timestamp']
             )
         );
-        $groupModel -> close();
-        $userModel -> close();
+    }
+
+    public static function suspend($buff, $rec, $msgModel) {
+        $susp = array(
+            'uid' => $buff['id'],
+            'type' => $buff['type'],
+            'rec_uid' => $rec,
+            'groupid' => null,
+            'msg' => $buff['content'],
+            'format' => 'txt',
+            'send_time' => $buff['timestamp']
+        );
+        if (!strcmp($buff['type'], 'group')) {
+            $susp['groupid'] = $buff['id'];
+            $susp['uid'] = $buff['fromid'];
+        }
+        $msgModel -> suspendMsg($susp);
     }
 
     public static function find($msg) {

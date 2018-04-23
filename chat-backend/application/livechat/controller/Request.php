@@ -33,12 +33,12 @@ class Request
             case 'list':
                 return json(ListManager::get($received['uuid']));
             case 'member':
-                MemberManager::get($received['groupid']);
+                return json(MemberManager::get($received['id']));
                 break;
             case 'hist':
                 break;
             case 'msg':
-                MsgManager::send($received, $received['to']);
+                MsgManager::send($received['data']);
                 break;
             case 'heart':
                 break;

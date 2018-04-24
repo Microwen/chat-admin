@@ -21,8 +21,6 @@
 
 use \Workerman\Lib\Timer;
 use \GatewayWorker\Lib\Gateway;
-use app\gatewayworker\Model\GroupModel;
-use app\gatewayworker\Model\UserModel;
 
 /**
  * 主逻辑
@@ -32,12 +30,6 @@ use app\gatewayworker\Model\UserModel;
 class Events
 {
     static protected $counts = array();
-    /**
-     * 当客户端连接时触发
-     * 如果业务不需此回调可以删除onConnect
-     * 
-     * @param int $client_id 连接id
-     */
 
     /**
      * GateWorker启动时开始定时器，并检测心跳
@@ -53,8 +45,7 @@ class Events
      * @param $client_id
      */
     public static function onConnect($client_id) {
-        // 向当前client_id发送数据 
-        //Gateway::sendToClient($client_id, "Hello $client_id\n");
+        // 向当前client_id发送数据
         Gateway::sendToClient($client_id, json_encode(array(
             'type'      => 'init',
             'client_id' => $client_id
@@ -69,43 +60,14 @@ class Events
      * @param mixed $message 具体消息
      * @throws Exception
      */
-   public static function onMessage($client_id, $message) {
+    public static function onMessage($client_id, $message) {
+        echo $message;
         $message = json_decode($message, true);
-        $buff = array(
-            'type' => '',
-            'status' => 0,
-            'msg' => '',
-            'uid' => '',
-            'level' => '',
-            'username' => '',
-            'timestamp' => ''
-        );
-        $groupModel = new GroupModel();
-        $userModel = new UserModel();
         switch ($message['type']) {
-            case "msg":
-            case "estb":
-                if (empty($message['uid']) || empty($message['group'])){
-                    goto ERR;
-                }
-                switch ($message['type']) {
-                    case "estb":
-                        self::estb_conn($client_id, $message, $userModel, $groupModel, $buff);
-                        $buff['status'] = 1;
-                        break;
-                    case "msg":
-                        self::format_msg($message, $userModel, $groupModel, $buff);
-                        $buff['status'] = 1;
-                        break;
-                }
-                $buff['timestamp'] = date('Y-m-d H:m:s', time());
-                Gateway::sendToGroup($message['group'], json_encode($buff));
-                break;
             case "heart":
                 self::$counts[$client_id] = time();
                 break;
             default:
-                ERR:
                 $buff['type'] = 'error';
                 $buff['msg'] = "Format ERROR: ".$message['msg'];
                 $buff['timestamp'] = date('Y-m-d H:m:s', time());
@@ -113,9 +75,7 @@ class Events
                 Gateway::closeClient($client_id);
                 break;
         }
-       $groupModel -> close();
-       $userModel -> close();
-   }
+    }
    
    /**
     * 当用户断开连接时触发
@@ -126,37 +86,7 @@ class Events
        // 向所有人发送
        echo $client_id."logout\n";
        unset(self::$counts[$client_id]);
-       GateWay::sendToAll($client_id."logout");
    }
-
-
-
-    /**
-     * 建立连接后的处理
-     * @param $client_id
-     * @param $message
-     * @param $userModel
-     * @param $groupModel
-     * @param $buff
-     */
-    private static function estb_conn($client_id, $message, $userModel, $groupModel, &$buff) {
-        Gateway::bindUid($client_id, $message['uid']);
-        Gateway::setSession($client_id,
-            array(
-                'uid' => $message['uid'],
-                'level' => $userModel -> getUserLevel($message['uid']),
-                'username' => $userModel -> getUserName($message['uid'])
-            )
-        );
-        Gateway::joinGroup($client_id, $message['group']);
-        $buff['type'] = 'join';
-        $buff['msg'] = array(
-            'members' => Gateway::getClientSessionsByGroup($message['group']),
-            'count' => Gateway::getClientCountByGroup($message['group']));
-        //历史记录发送
-        Gateway::sendToClient($client_id, json_encode(array('type' => 'hist', 'cont' => $groupModel -> getMsgByGroup($groupModel -> findGroup($message['group'])))));
-    }
-
 
     /**
      * 检查用户是否活跃，若没有，将连接强制断开
@@ -164,7 +94,6 @@ class Events
    public static function checkConn() {
        foreach (self::$counts as $client_id => $lastTime) {
            $diff = time() - $lastTime;
-           echo $diff;
            if ($diff > 90) {
                Gateway::closeClient($client_id);
                unset(self::$counts[$client_id]);

@@ -19,7 +19,6 @@ class Request
         switch ($_REQUEST['type']) {
             case 'init':
                 ConnectManager::conn($_REQUEST['client_id'], $_REQUEST['uuid']);
-                return '';
                 break;
             case 'list':
                 return json(ListManager::get($_REQUEST['uuid']));

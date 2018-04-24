@@ -35,7 +35,7 @@ class MsgManager
         $msgModel = new MessageModel();
         if (!strcmp($msg['to']['type'], 'group')) {
             $buff['id'] = $msg['to']['id'];
-            Gateway::sendToGroup($buff['id'], json_encode($buff));
+            Gateway::sendToGroup($buff['id'], json_encode(array('type' => 'msg', 'data' => $buff)));
             foreach ($groupModel -> getMembers($buff['id']) as $m) {
                 if (!Gateway::isUidOnline($m['uuid'])) {
                     self::saveMsg($buff, $m['uuid'], $msgModel, true);
@@ -45,7 +45,7 @@ class MsgManager
         } else {
             $buff['id'] = $msg['mine']['id'];
             if (Gateway::isUidOnline($msg['to']['id'])){
-                Gateway::sendToUid($msg['to']['id'], json_encode($buff));
+                Gateway::sendToUid($msg['to']['id'], json_encode(array('type' => 'msg', 'data' => $buff)));
             } else {
                 self::saveMsg($buff, $msg['to']['id'], $msgModel, true);
             }

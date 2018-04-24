@@ -5,8 +5,8 @@
  * Date: 2018/4/20
  * Time: 11:28
  */
-
 namespace app\livechat\controller;
+
 require_once __DIR__ . '/../../../vendor/workerman/workerman/Lib/Constants.php';
 
 class Request
@@ -19,6 +19,7 @@ class Request
         switch ($_REQUEST['type']) {
             case 'init':
                 ConnectManager::conn($_REQUEST['client_id'], $_REQUEST['uuid']);
+                return '';
                 break;
             case 'list':
                 return json(ListManager::get($_REQUEST['uuid']));

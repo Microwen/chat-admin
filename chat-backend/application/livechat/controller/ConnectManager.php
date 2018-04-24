@@ -8,10 +8,10 @@
 
 namespace app\Livechat\Controller;
 
-require_once __DIR__.'/../../../vendor/workerman/gatewayclient/Gateway.php';
+require_once __DIR__.'/gatewayclient/Gateway.php';
 use GatewayClient\Gateway;
-use app\gatewayworker\Model\UserModel;
-use app\gatewayworker\Model\GroupModel;
+use app\livechat\Model\UserModel;
+use app\livechat\Model\GroupModel;
 
 
 class ConnectManager

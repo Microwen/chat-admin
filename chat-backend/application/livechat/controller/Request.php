@@ -16,29 +16,18 @@ class Request
      * @throws \Exception
      */
     public function index() {
-        $received = json_decode(base64_decode($_REQUEST['request']), true);
-        return $this -> commander($received);
-    }
-
-    /**
-     * @param $received
-     * @return null|string
-     * @throws \Exception
-     */
-    private function commander($received) {
-        switch ($received["type"]) {
+        switch ($_REQUEST['type']) {
             case 'init':
-                ConnectManager::conn($received['client_id'], $received['uuid']);
+                ConnectManager::conn($_REQUEST['client_id'], $_REQUEST['uuid']);
                 break;
             case 'list':
-                return json(ListManager::get($received['uuid']));
+                return json(ListManager::get($_REQUEST['uuid']));
             case 'member':
-                return json(MemberManager::get($received['id']));
-                break;
+                return json(MemberManager::get($_REQUEST['id']));
             case 'hist':
                 break;
             case 'msg':
-                MsgManager::send($received);
+                MsgManager::send(json_decode($_REQUEST['data'], true));
                 break;
             case 'heart':
                 break;
@@ -47,6 +36,4 @@ class Request
         }
         return null;
     }
-
-
 }

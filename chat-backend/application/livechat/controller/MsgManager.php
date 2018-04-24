@@ -7,7 +7,8 @@
  */
 namespace app\Livechat\Controller;
 
-require_once __DIR__.'/../../../vendor/workerman/gatewayclient/Gateway.php';
+require_once __DIR__ . '/gatewayclient/Gateway.php';
+
 use GatewayClient\Gateway;
 use app\livechat\Model\GroupModel;
 use app\livechat\Model\MessageModel;
@@ -18,6 +19,7 @@ class MsgManager
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
+     * @throws \Exception
      */
     public static function send($msg) {
         Gateway::$registerAddress = '127.0.0.1:1238';

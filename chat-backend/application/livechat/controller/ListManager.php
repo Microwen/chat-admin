@@ -18,7 +18,7 @@ class ListManager
             'code' => 0,
             'msg' => '',
             'data' => array(
-                'mine' => '',
+                'mine' => [],
                 'friend' => [],
                 'group' => []
             )
@@ -50,7 +50,6 @@ class ListManager
             $list = array(
                 'groupname' => $foo,
                 'id' => $count,
-                'online' => 1, //TODO
                 'list' => []
             );
             foreach ($friends as $bar) {
@@ -65,6 +64,7 @@ class ListManager
                 }
             }
             array_push($return['data']['friend'], $list);
+            $count ++;
         }
     }
 

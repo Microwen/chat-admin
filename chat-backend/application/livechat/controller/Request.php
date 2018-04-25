@@ -7,6 +7,8 @@
  */
 namespace app\livechat\controller;
 
+use app\livechat\Model\UserModel;
+
 require_once __DIR__ . '/../../../vendor/workerman/workerman/Lib/Constants.php';
 
 class Request
@@ -29,8 +31,18 @@ class Request
             case 'msg':
                 MsgManager::send(json_decode($_REQUEST['data'], true));
                 break;
-            case 'heart':
-                break;
+            case 'add':
+                return UserManager::add(json_decode($_REQUEST['data'], true));
+            case 'del':
+                return UserManager::remove(json_decode($_REQUEST['data'], true));
+            case 'create':
+                return GroupManager::create($_REQUEST['groupname']);
+            case 'dismiss':
+                return GroupManager::dismiss(json_decode($_REQUEST['data'], true));
+            case 'join':
+                return GroupManager::join(json_decode($_REQUEST['data'], true));
+            case 'quit':
+                return GroupManager::quit(json_decode($_REQUEST['data'], true));
             default:
                 return json_encode(array('code' => 1, 'msg' => 'unknown type'));
         }

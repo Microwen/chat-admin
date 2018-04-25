@@ -11,17 +11,13 @@ class UserModel extends Model{
      * @param $arr array 用户数据(username & password必填，其他可选)
      * @return bool|mixed 返回false如果创建失败
      */
-
-    //TODO
-    public function addUser($arr){
-        if (!empty($arr['username']) && !empty($arr['pwd'])) {
-            $arr['create_time'] = date('Y-m-d H:m:s', time());
-            return $this -> db -> insert('user_info') -> cols($arr) -> query();
-        } else {
-            return false;
-        }
+    public static function addUser($arr){
+        return Db::table('user_info') -> insert($arr);
     }
 
+    public static function delUser($uuid) {
+        //TODO
+    }
     /**
      * 查询用户
      * @param $uuid

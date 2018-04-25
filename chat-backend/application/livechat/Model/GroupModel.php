@@ -12,11 +12,31 @@ class GroupModel extends Model{
      * @return string
      */
     public function createGroup($groupName) {
-        $result = $this -> findGroupId($groupName);
-        if (!$result) {
-            $this -> db -> insert('groups') -> cols(array('id' => "GP".time().rand(100, 999), 'gourpname' => $groupName)) -> query();
-        }
-        return $result;
+        Db::table('groups') -> insert(array('groupname' => $groupName));
+        return $this -> findGroupId($groupName);
+    }
+
+    public function dismiss() {
+        //TODO
+    }
+
+    /**
+     * 将用户加入群
+     * @param $groups
+     */
+    public static function joinGroup($arr) {
+        $arr['join_time'] = date('Y-m-d H:m:s', time());
+        Db::table('user_to_group') -> insert($arr);
+    }
+
+    /**
+     * 将用户退群
+     * @param $arr
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public static function quitGroup($arr) {
+        Db::table('user_to_group') -> where('uid', $arr['uid']) -> where('groupid', $arr['groupid']) ->delete();
     }
 
     /**
@@ -25,15 +45,7 @@ class GroupModel extends Model{
      * @return bool|string
      */
     public function findGroupId($groupName) {
-        //TODO
-//        $result = $this -> db -> select('id,groupname') -> from('groups')
-//            -> where('groupname = :groupName') -> bindValue('groupName', $groupName)
-//            -> single();
-//        if (empty($result)) {
-//            return false;
-//        } else {
-//            return $result;
-//        }
+        return Db::table('groups') -> where('groupname', $groupName) -> value('gid');
     }
 
     /**

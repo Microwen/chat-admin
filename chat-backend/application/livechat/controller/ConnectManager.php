@@ -34,7 +34,7 @@ class ConnectManager
             )
         );
         foreach ($groupModel -> getGroupsByUid($userModel -> getUidByUuid($uuid)) as $v) {
-            Gateway::joinGroup($client_id, $v);
+            Gateway::joinGroup($client_id, $v['groupid']);
         }
 
         //TODO retrieve unsent message

@@ -33,12 +33,13 @@ class ListManager
     }
 
     private static function mine($uuid, &$return, $userModel) {
+        $user = $userModel -> getUser($uuid);
         $return['data']['mine'] = array(
-            'username' => $userModel -> getUserName($uuid),
+            'username' => $user[0]['username'],
             'id' => $uuid,
             "status" => "online",
             "sign" => '', //TODO
-            "avatar" => '' //TODO
+            "avatar" => $user[0]['avatar']
         );
     }
 
@@ -57,7 +58,7 @@ class ListManager
                     array_push($list['list'], array(
                             'username' => $bar['username'],
                             'id' => $bar['uuid'],
-                            "avatar" => '', //TODO
+                            "avatar" => $bar['avatar'],
                             "sign" => '' //TODO
                         )
                     );

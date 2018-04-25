@@ -23,22 +23,15 @@ class UserModel extends Model{
     }
 
     /**
-     * 查找用户
-     * @param $uid
-     * @return mixed 返回用户数据
+     * 查询用户
+     * @param $uuid
+     * @return false|\PDOStatement|string|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
-    public function findUser($uuid) {
-        //TODO
-    }
-
-    /**
-     * 查询特定的列
-     * @param $column string 需查询的列
-     * @param $match string 匹配结果
-     * @return mixed 返回查询到的数据
-     */
-    public function getUserBy($column, $match) {
-        //TODO
+    public function getUser($uuid) {
+        return Db::table('user_info') -> where('uuid', $uuid) -> select();
     }
 
     /**
@@ -117,8 +110,8 @@ class UserModel extends Model{
      * @throws \think\exception\DbException
      */
     public function getFriends($uid) {
-        return Db::table('user_to_user') -> field('list2 as list,username,uuid') ->  where('uid1',$uid) -> join('user_info', 'uid2=uid') -> union(function ($query) use ($uid) {
-            $query -> table('user_to_user') -> field('list1 as list,username,uuid') ->  where('uid2',$uid) -> join('user_info', 'uid1=uid');}) -> select();
+        return Db::table('user_to_user') -> field('list2 as list,username,uuid, avatar') ->  where('uid1',$uid) -> join('user_info', 'uid2=uid') -> union(function ($query) use ($uid) {
+            $query -> table('user_to_user') -> field('list1 as list,username,uuid, avatar') ->  where('uid2',$uid) -> join('user_info', 'uid1=uid');}) -> select();
 
     }
 }

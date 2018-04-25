@@ -8,7 +8,6 @@
 
 namespace app\Livechat\Controller;
 
-use think\Db;
 use app\livechat\Model\GroupModel;
 
 class MemberManager

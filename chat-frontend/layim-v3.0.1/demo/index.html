@@ -189,7 +189,7 @@ layui.use('layim', function(layim){
   //监听发送消息
   layim.on('sendMessage', function(data){
     var To = data.to;
-    //console.log(data);
+    console.log(data);
     
     if(To.type === 'friend'){
       layim.setChatStatus('<span style="color:#FF5722;">对方正在输入。。。</span>');

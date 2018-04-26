@@ -31,29 +31,31 @@ class MsgManager
             'fromid' => $msg['mine']['id'],
             'timestamp' => time() * 1000
         );
-        $groupModel = new GroupModel();
-        $msgModel = new MessageModel();
         if (!strcmp($msg['to']['type'], 'group')) {
             $buff['id'] = $msg['to']['id'];
             Gateway::sendToGroup($buff['id'], json_encode(array('type' => 'msg', 'data' => $buff)));
-            foreach ($groupModel -> getMembers($buff['id']) as $m) {
+            foreach (GroupModel::getMembers($buff['id']) as $m) {
                 if (!Gateway::isUidOnline($m['uuid'])) {
-                    self::saveMsg($buff, $m['uuid'], $msgModel, true);
+                    self::saveMsg($buff, $m['uid'], true);
                 }
             }
-            self::saveMsg($buff, null, $msgModel);
+            self::saveMsg($buff, null);
         } else {
             $buff['id'] = $msg['mine']['id'];
             if (Gateway::isUidOnline($msg['to']['id'])){
                 Gateway::sendToUid($msg['to']['id'], json_encode(array('type' => 'msg', 'data' => $buff)));
             } else {
-                self::saveMsg($buff, $msg['to']['id'], $msgModel, true);
+                self::saveMsg($buff, $msg['to']['id'], true);
             }
-            self::saveMsg($buff, $msg['to']['id'], $msgModel);
+            self::saveMsg($buff, $msg['to']['id']);
         }
     }
 
-    public static function saveMsg($buff, $rec, $msgModel, $suspend = false) {
+    public static function retMsg($uuid) {
+
+    }
+
+    public static function saveMsg($buff, $rec, $suspend = false) {
         $msg = array(
             'uid' => $buff['fromid'],
             'type' => $buff['type'],
@@ -64,12 +66,12 @@ class MsgManager
             'send_time' => date('Y-m-d H:m:s',$buff['timestamp']/1000)
         );
         if (!strcmp($buff['type'], 'group')) {
-            $smsg['groupid'] = $buff['id'];
+            $msg['groupid'] = $buff['id'];
         }
         if ($suspend) {
-            $msgModel -> suspendMsg($msg);
+            MessageModel::suspendMsg($msg);
         } else {
-            $msgModel -> saveMsg($msg);
+            MessageModel::saveMsg($msg);
         }
     }
 }

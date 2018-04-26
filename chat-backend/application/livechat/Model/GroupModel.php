@@ -11,12 +11,12 @@ class GroupModel extends Model{
      * @param $groupName
      * @return string
      */
-    public function createGroup($groupName) {
+    public static function createGroup($groupName) {
         Db::table('groups') -> insert(array('groupname' => $groupName));
-        return $this -> findGroupId($groupName);
+        return self::findGroupId($groupName);
     }
 
-    public function dismiss() {
+    public static function dismiss() {
         //TODO
     }
 
@@ -44,7 +44,7 @@ class GroupModel extends Model{
      * @param $groupName
      * @return bool|string
      */
-    public function findGroupId($groupName) {
+    public static function findGroupId($groupName) {
         return Db::table('groups') -> where('groupname', $groupName) -> value('gid');
     }
 
@@ -56,7 +56,7 @@ class GroupModel extends Model{
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getMembers($groupid) {
+    public static function getMembers($groupid) {
         return Db::table('user_to_group') -> join('user_info', "user_to_group.uid = user_info.uid", 'left') -> where('groupid', $groupid) -> select();
     }
 
@@ -67,11 +67,11 @@ class GroupModel extends Model{
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getGroupsByUid($uid) {
+    public static function getGroupsByUid($uid) {
         return Db::table('user_to_group') -> field('groupid,groupname')-> where('uid', $uid) -> join('groups', 'groupid = gid') -> select();
     }
 
-    public function getGroupName($groupid) {
+    public static function getGroupName($groupid) {
         return Db::table('groups') -> where('gid', $groupid) -> value('groupname');
     }
 }

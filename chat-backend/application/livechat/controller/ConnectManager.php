@@ -12,6 +12,7 @@ require_once __DIR__.'/gatewayclient/Gateway.php';
 use GatewayClient\Gateway;
 use app\livechat\Model\UserModel;
 use app\livechat\Model\GroupModel;
+use app\Livechat\Controller\MsgManager;
 
 
 class ConnectManager
@@ -23,20 +24,18 @@ class ConnectManager
      */
     public static function conn($client_id, $uuid) {
         Gateway::$registerAddress = '127.0.0.1:1238';
-        $userModel = new UserModel();
-        $groupModel = new GroupModel();
         Gateway::bindUid($client_id, $uuid);
         Gateway::setSession($client_id,
             array(
                 'uuid' => $uuid,
-                'level' => $userModel -> getUserLevel($uuid),
-                'username' => $userModel -> getUserName($uuid)
+                'level' => UserModel::getUserLevel($uuid),
+                'username' => UserModel::getUserName($uuid)
             )
         );
-        foreach ($groupModel -> getGroupsByUid($userModel -> getUidByUuid($uuid)) as $v) {
+        foreach (GroupModel::getGroupsByUid(UserModel::getUidByUuid($uuid)) as $v) {
             Gateway::joinGroup($client_id, $v['groupid']);
         }
 
-        //TODO retrieve unsent message
+        MsgManager::retMsg($uuid);
     }
 }

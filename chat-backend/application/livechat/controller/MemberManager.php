@@ -20,8 +20,7 @@ class MemberManager
      * @throws \think\exception\DbException
      */
     public static function get($groupId) {
-        $groupModel = new GroupModel();
-        $members = $groupModel -> getMembers($groupId);
+        $members = GroupModel::getMembers($groupId);
         $result = array(
             "code" => 0,
             "msg" => '',

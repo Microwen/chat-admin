@@ -13,6 +13,13 @@ use app\livechat\Model\GroupModel;
 
 class ListManager
 {
+    /**
+     * @param $uuid
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public static function get($uuid) {
         $return = array(
             'code' => 0,
@@ -23,17 +30,22 @@ class ListManager
                 'group' => []
             )
         );
-        $userModel = new UserModel();
-        $groupModel = new GroupModel();
-        $uid = $userModel -> getUidByUuid($uuid);
-        self::mine($uuid, $return, $userModel);
-        self::friend($uid, $return, $userModel);
-        self::group($uid, $return, $groupModel);
+        $uid = UserModel::getUidByUuid($uuid);
+        self::mine($uuid, $return);
+        self::friend($uid, $return);
+        self::group($uid, $return);
         return $return;
     }
 
-    private static function mine($uuid, &$return, $userModel) {
-        $user = $userModel -> getUser($uuid);
+    /**
+     * @param $uuid
+     * @param $return
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    private static function mine($uuid, &$return) {
+        $user = UserModel::getUser($uuid);
         $return['data']['mine'] = array(
             'username' => $user[0]['username'],
             'id' => $uuid,
@@ -43,9 +55,16 @@ class ListManager
         );
     }
 
-    private static function friend($uid, &$return, $userModel) {
-        $groups = $userModel -> getFriendGroup($uid);
-        $friends = $userModel -> getFriends($uid);
+    /**
+     * @param $uid
+     * @param $return
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    private static function friend($uid, &$return) {
+        $groups = UserModel::getFriendGroup($uid);
+        $friends = UserModel::getFriends($uid);
         $count = 1;
         foreach ($groups as $foo) {
             $list = array(
@@ -69,8 +88,15 @@ class ListManager
         }
     }
 
-    private static function group($uid, &$return, $groupModel) {
-        $groups = $groupModel -> getGroupsByUid($uid);
+    /**
+     * @param $uid
+     * @param $return
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    private static function group($uid, &$return) {
+        $groups = GroupModel::getGroupsByUid($uid);
         foreach ($groups as $g) {
             $arr = array(
                 'groupname' => $g['groupname'],

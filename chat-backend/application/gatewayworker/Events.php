@@ -61,14 +61,14 @@ class Events
      * @throws Exception
      */
     public static function onMessage($client_id, $message) {
-        echo $message;
+        echo date("H:m:s", time())." from ".$client_id.": ".$message."\n";
         $message = json_decode($message, true);
         switch ($message['type']) {
             case "heart":
                 self::$counts[$client_id] = time();
                 break;
             default:
-                $buff['type'] = 'error';
+                $buff['code'] = 1;
                 $buff['msg'] = "Format ERROR: ".$message['msg'];
                 $buff['timestamp'] = date('Y-m-d H:m:s', time());
                 Gateway::sendToClient($client_id, json_encode($buff));

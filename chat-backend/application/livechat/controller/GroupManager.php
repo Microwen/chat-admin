@@ -18,11 +18,10 @@ class GroupManager
      * @return bool|string
      */
     public static function create($groupName) {
-        $groupModel = new GroupModel();
-        if ($groupModel -> findGroupId($groupName)) {
+        if (GroupModel::findGroupId($groupName)) {
             return 'exist';
         } else {
-            return $groupModel -> createGroup($groupName);
+            return GroupModel::createGroup($groupName);
         }
     }
 
@@ -32,19 +31,23 @@ class GroupManager
      * @return bool
      */
     public static function join($arr) {
-        $userModel = new UserModel();
         foreach ($arr as $v) {
-            $v['uid'] = $userModel -> getUidByUuid($v['uuid']);
+            $v['uid'] = UserModel::getUidByUuid($v['uuid']);
             unset($v['uuid']);
             GroupModel::joinGroup($v);
         }
         return 1;
     }
 
+    /**
+     * @param $arr
+     * @return int
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
     public static function quit($arr) {
-        $userModel = new UserModel();
         foreach ($arr as $v) {
-            $v['uid'] = $userModel -> getUidByUuid($v['uuid']);
+            $v['uid'] = UserModel::getUidByUuid($v['uuid']);
             unset($v['uuid']);
             GroupModel::quitGroup($v);
         }

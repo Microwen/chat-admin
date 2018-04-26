@@ -26,7 +26,7 @@ class UserModel extends Model{
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getUser($uuid) {
+    public static function getUser($uuid) {
         return Db::table('user_info') -> where('uuid', $uuid) -> select();
     }
 
@@ -35,7 +35,7 @@ class UserModel extends Model{
      * @param $uuid
      * @return string
      */
-    public function getUidByUuid($uuid) {
+    public static function getUidByUuid($uuid) {
         return Db::table('user_info')->where('uuid',$uuid) -> value('uid');
     }
 
@@ -44,7 +44,7 @@ class UserModel extends Model{
      * @param $uid
      * @return mixed
      */
-    public function getUUidByUid($uid) {
+    public static function getUUidByUid($uid) {
         return Db::table('user_info')->where('uid',$uid) -> value('uuid');
     }
 
@@ -54,9 +54,8 @@ class UserModel extends Model{
      * @param $uuid
      * @return mixed 用户的组
      */
-    public function getGroupOfUser($uuid) {
-        return $this -> db -> select('groupid, uuid') -> from('groupofuser')
-            -> where('uuid = :uuid') -> bindValue('uuid', $uuid) -> query();
+    public static function getGroupOfUser($uuid) {
+        //TODO
     }
 
     /**
@@ -64,7 +63,7 @@ class UserModel extends Model{
      * @param $uuid
      * @return string 用户权限
      */
-    public function getUserLevel($uuid) {
+    public static function getUserLevel($uuid) {
         return Db::table('user_info') -> where('uuid', $uuid) -> value('level');
     }
 
@@ -73,7 +72,7 @@ class UserModel extends Model{
      * @param $uuid
      * @return string 用户名称
      */
-    public function getUserName($uuid) {
+    public static function getUserName($uuid) {
         return Db::table('user_info') -> where('uuid',$uuid) -> value('username');
     }
 
@@ -82,7 +81,7 @@ class UserModel extends Model{
      * @return mixed
      */
     public function get_all() {
-        return $this -> db -> select('*') -> from('user_info') -> query();
+        //TODO
     }
 
 
@@ -91,7 +90,7 @@ class UserModel extends Model{
      * @param $uid
      * @return array
      */
-    public function getFriendGroup($uid) {
+    public static function getFriendGroup($uid) {
         return array_merge(Db::table('user_to_user') -> distinct(true) -> where('uid1',$uid) -> column('list2'),
             Db::table('user_to_user') -> distinct(true) -> where('uid2',$uid) -> column('list1')
             );
@@ -105,7 +104,7 @@ class UserModel extends Model{
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getFriends($uid) {
+    public static function getFriends($uid) {
         return Db::table('user_to_user') -> field('list2 as list,username,uuid, avatar') ->  where('uid1',$uid) -> join('user_info', 'uid2=uid') -> union(function ($query) use ($uid) {
             $query -> table('user_to_user') -> field('list1 as list,username,uuid, avatar') ->  where('uid2',$uid) -> join('user_info', 'uid1=uid');}) -> select();
 

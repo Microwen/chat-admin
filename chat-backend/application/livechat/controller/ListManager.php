@@ -14,7 +14,6 @@ use app\livechat\Model\GroupModel;
 class ListManager
 {
     /**
-     * @param $uuid
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException

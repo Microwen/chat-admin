@@ -16,11 +16,39 @@ use app\livechat\Model\GroupModel;
 class ConnectManager
 {
     /**
+     * 登陆处理
+     * @param $username
+     * @param $pwd
+     * @return array
+     */
+    public static function login($username, $pwd) {
+        session_start();
+        if (isset($username) && isset($pwd)) {
+            $uuid = UserModel::getUUidByUsername($username);
+            $stored = UserModel::getPwd($uuid);
+            if ($stored == $pwd) {
+                $_SESSION['uuid'] = $uuid;
+                return array("code" => 0, 'uuid' => $uuid);
+            }
+            return array("code" => 1);
+        } else {
+            return array("code" => 1);
+        }
+    }
+
+    /**
      * @param $client_id
-     * @param $uid
-     * @throws \Exception
+     * @return null
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public static function conn($client_id, $uuid) {
+        if (!isset($uuid)) {
+            return array("code" => 1, 'msg' => 'session not set');
+        }
         Gateway::$registerAddress = '127.0.0.1:1238';
         Gateway::bindUid($client_id, $uuid);
         Gateway::setSession($client_id,
@@ -35,5 +63,6 @@ class ConnectManager
             Gateway::joinGroup($client_id, $v['groupid']);
         }
         MsgManager::retMsg($uid, $uuid);
+        array("code" => 0);
     }
 }

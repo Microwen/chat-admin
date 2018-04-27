@@ -18,9 +18,10 @@ class Request
      */
     public function index() {
         switch ($_REQUEST['type']) {
+            case 'login':
+                return json(ConnectManager::login($_REQUEST['username'], $_REQUEST['pwd']));
             case 'init':
-                ConnectManager::conn($_REQUEST['client_id'], $_REQUEST['uuid']);
-                break;
+                return json(ConnectManager::conn($_REQUEST['client_id'], $_REQUEST['uuid']));
             case 'list':
                 return json(ListManager::get($_REQUEST['uuid']));
             case 'member':
@@ -43,7 +44,7 @@ class Request
             case 'quit':
                 return GroupManager::quit(json_decode($_REQUEST['data'], true));
             default:
-                return json_encode(array('code' => 1, 'msg' => 'unknown type'));
+                return json_encode(array('code' => 1, 'msg' => '未知消息'));
         }
         return null;
     }

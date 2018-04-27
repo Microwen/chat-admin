@@ -18,6 +18,7 @@ class UserModel extends Model{
     public static function delUser($uuid) {
         //TODO
     }
+
     /**
      * 查询用户
      * @param $uuid
@@ -44,10 +45,18 @@ class UserModel extends Model{
      * @param $uid
      * @return mixed
      */
-    public static function getUUidByUid($uid) {
-        return Db::table('user_info')->where('uid',$uid) -> value('uuid');
+    public static function getUUidByUsername($username) {
+        return Db::table('user_info')->where('username',$username) -> value('uuid');
     }
 
+    /**
+     * 获取用户密码
+     * @param $uuid
+     * @return mixed
+     */
+    public static function getPwd($uuid) {
+        return Db::table('user_info') -> where('uuid', $uuid) -> value('pwd');
+    }
 
     /**
      * 根据uuid查询用户所在的组

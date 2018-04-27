@@ -6,14 +6,12 @@
  * Time: 13:32
  */
 
-namespace app\Livechat\Controller;
+namespace app\livechat\controller;
 
 require_once __DIR__.'/gatewayclient/Gateway.php';
 use GatewayClient\Gateway;
 use app\livechat\Model\UserModel;
 use app\livechat\Model\GroupModel;
-use app\Livechat\Controller\MsgManager;
-
 
 class ConnectManager
 {
@@ -32,10 +30,10 @@ class ConnectManager
                 'username' => UserModel::getUserName($uuid)
             )
         );
-        foreach (GroupModel::getGroupsByUid(UserModel::getUidByUuid($uuid)) as $v) {
+        $uid = UserModel::getUidByUuid($uuid);
+        foreach (GroupModel::getGroupsByUid($uid) as $v) {
             Gateway::joinGroup($client_id, $v['groupid']);
         }
-
-        MsgManager::retMsg($uuid);
+        MsgManager::retMsg($uid, $uuid);
     }
 }

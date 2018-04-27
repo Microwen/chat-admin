@@ -51,8 +51,34 @@ class MsgManager
         }
     }
 
-    public static function retMsg($uuid) {
-
+    /**
+     * @param $uid
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
+     */
+    public static function retMsg($uid, $uuid) {
+        $msg = MessageModel::retMsg($uid);
+        $send = array();
+        foreach ($msg as $m) {
+            $sub = array(
+                "id" => $m['uuid'],
+                "username" => $m['username'],
+                "avatar" => $m['avatar'],
+                "type" => $m['type'],
+                'content' => $m['msg'],
+                'fromid' => $m['uuid'],
+                'timestamp' => $m['send_time']
+            );
+            if (!strcmp($m['type'], "group")) {
+                $buff['id'] = $m['groupid'];
+            }
+            array_push($send, $sub);
+        }
+        Gateway::sendToUid($uuid, json_encode(array('type' => 'ret', 'data' => $send)));
+        MessageModel::delMsg($uid);
     }
 
     public static function saveMsg($buff, $rec, $suspend = false) {

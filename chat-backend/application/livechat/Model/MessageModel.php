@@ -30,6 +30,27 @@ class MessageModel extends Model {
     }
 
     /**
+     * 取回未接收聊天记录
+     * @param $uid
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public static function retMsg($uid) {
+        return Db::table('unsent_msg') -> field('uuid,username,avatar,type,msg,groupid,send_time')-> join('user_info', 'unsent_msg.uid=user_info.uid', 'LEFT') -> where('rec_uid', $uid) -> select();
+    }
+
+    /**
+     * @param $uid
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public static function delMsg($uid) {
+        Db::table('unsent_msg') -> where('rec_uid', $uid) -> delete();
+    }
+
+    /**
      * 根据群id取回组聊天记录
      * @param $id
      * @return mixed

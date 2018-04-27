@@ -7,7 +7,6 @@
  */
 namespace app\livechat\controller;
 
-use app\livechat\Model\UserModel;
 
 require_once __DIR__ . '/../../../vendor/workerman/workerman/Lib/Constants.php';
 

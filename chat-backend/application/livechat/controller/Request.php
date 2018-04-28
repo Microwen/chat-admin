@@ -18,19 +18,22 @@ class Request
      */
     public function index() {
         switch ($_REQUEST['type']) {
+            case 'test':
+                return session('uuid','test');
+//                echo $_SESSION['uuid'];
+                break;
             case 'login':
                 return json(ConnectManager::login($_REQUEST['username'], $_REQUEST['pwd']));
             case 'init':
                 return json(ConnectManager::conn($_REQUEST['client_id'], $_REQUEST['uuid']));
             case 'list':
-                return json(ListManager::get($_REQUEST['uuid']));
+                return json(ListManager::get());
             case 'member':
                 return json(MemberManager::get($_REQUEST['id']));
             case 'hist':
                 break;
             case 'msg':
-                MsgManager::send(json_decode($_REQUEST['data'], true));
-                break;
+                return json(MsgManager::send(json_decode($_REQUEST['data'], true)));
             case 'add':
                 return UserManager::add(json_decode($_REQUEST['data'], true));
             case 'del':

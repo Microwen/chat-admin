@@ -6,6 +6,7 @@
       <path value="$PROJECT_DIR$/chat-backend/vendor/workerman/workerman" />
       <path value="$PROJECT_DIR$/chat-backend/vendor/workerman/gateway-worker" />
       <path value="$PROJECT_DIR$/chat-backend/vendor/topthink/think-installer" />
+      <path value="$PROJECT_DIR$/chat-backend/vendor/workerman/gatewayclient" />
     </include_path>
   </component>
 </project>

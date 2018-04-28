@@ -19,7 +19,8 @@ class ListManager
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public static function get($uuid) {
+    public static function get() {
+        $uuid = session('uuid');
         $return = array(
             'code' => 0,
             'msg' => '',

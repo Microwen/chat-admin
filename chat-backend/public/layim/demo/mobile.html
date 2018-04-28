@@ -23,7 +23,6 @@ layui.config().use('mobile', function () {
     url: "http://118.24.117.177/index.php/request",
     data: {
       "type": "list",
-      "uuid":sessionStorage.getItem("uuid")
     },
     success: function (data) {
       d = data.data;

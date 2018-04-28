@@ -22,6 +22,9 @@ class MsgManager
      * @throws \Exception
      */
     public static function send($msg) {
+        if (!self::chkMsg($msg)) {
+            return array('code' => 1, 'msg' => 'msg check failed');
+        }
         Gateway::$registerAddress = '127.0.0.1:1238';
         $buff = array(
             'username' => $msg['mine']['username'],
@@ -49,6 +52,7 @@ class MsgManager
             }
             self::saveMsg($buff, $msg['to']['id']);
         }
+        return array('code' => 0);
     }
 
     /**
@@ -99,5 +103,10 @@ class MsgManager
         } else {
             MessageModel::saveMsg($msg);
         }
+    }
+
+    private static function chkMsg($msg) {
+        //TODO
+        return true;
     }
 }

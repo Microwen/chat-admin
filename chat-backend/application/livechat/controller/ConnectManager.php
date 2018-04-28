@@ -22,12 +22,11 @@ class ConnectManager
      * @return array
      */
     public static function login($username, $pwd) {
-        session_start();
         if (isset($username) && isset($pwd)) {
             $uuid = UserModel::getUUidByUsername($username);
             $stored = UserModel::getPwd($uuid);
             if ($stored == $pwd) {
-                $_SESSION['uuid'] = $uuid;
+                session('uuid',$uuid);
                 return array("code" => 0, 'uuid' => $uuid);
             }
             return array("code" => 1);
@@ -46,8 +45,8 @@ class ConnectManager
      * @throws \think\exception\PDOException
      */
     public static function conn($client_id, $uuid) {
-        if (!isset($uuid)) {
-            return array("code" => 1, 'msg' => 'session not set');
+        if (!isset($uuid) && (session('uuid') != $uuid)) {
+            return array("code" => 1, 'msg' => 'auth failed');
         }
         Gateway::$registerAddress = '127.0.0.1:1238';
         Gateway::bindUid($client_id, $uuid);

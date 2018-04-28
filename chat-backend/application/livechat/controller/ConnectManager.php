@@ -36,6 +36,7 @@ class ConnectManager
     }
 
     /**
+     * Gatewayworker连接
      * @param $client_id
      * @return null
      * @throws \think\Exception

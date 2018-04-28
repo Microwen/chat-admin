@@ -13,6 +13,7 @@ use app\livechat\Model\GroupModel;
 class MemberManager
 {
     /**
+     * 获取群成员
      * @param $groupId
      * @return array
      * @throws \think\db\exception\DataNotFoundException

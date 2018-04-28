@@ -16,6 +16,9 @@ class GroupModel extends Model{
         return self::findGroupId($groupName);
     }
 
+    /**
+     * 解散群
+     */
     public static function dismiss() {
         //TODO
     }
@@ -40,7 +43,7 @@ class GroupModel extends Model{
     }
 
     /**
-     * 查找根据群名查找组id
+     * 查找根据群名查找群id
      * @param $groupName
      * @return bool|string
      */
@@ -49,7 +52,7 @@ class GroupModel extends Model{
     }
 
     /**
-     * 根据群id取回所有在组里的用户
+     * 根据群id取回所有在群里的用户
      * @param $groupid
      * @return false|\PDOStatement|string|\think\Collection
      * @throws \think\db\exception\DataNotFoundException
@@ -61,6 +64,7 @@ class GroupModel extends Model{
     }
 
     /**
+     * 获取用户所加入的所有群
      * @param $uid
      * @return false|\PDOStatement|string|\think\Collection
      * @throws \think\db\exception\DataNotFoundException
@@ -71,6 +75,11 @@ class GroupModel extends Model{
         return Db::table('user_to_group') -> field('groupid,groupname')-> where('uid', $uid) -> join('groups', 'groupid = gid') -> select();
     }
 
+    /**
+     * 获取群的名称
+     * @param $groupid
+     * @return mixed
+     */
     public static function getGroupName($groupid) {
         return Db::table('groups') -> where('gid', $groupid) -> value('groupname');
     }

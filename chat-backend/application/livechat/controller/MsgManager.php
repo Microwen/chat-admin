@@ -15,6 +15,7 @@ use app\livechat\Model\MessageModel;
 class MsgManager
 {
     /**
+     * 发送消息
      * @param $msg
      * @return array
      * @throws \think\db\exception\DataNotFoundException
@@ -56,6 +57,7 @@ class MsgManager
     }
 
     /**
+     * 取回离线消息
      * @param $uid
      * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
@@ -85,6 +87,12 @@ class MsgManager
         MessageModel::delMsg($uid);
     }
 
+    /**
+     * 保存聊天记录
+     * @param $buff
+     * @param $rec
+     * @param bool $suspend
+     */
     public static function saveMsg($buff, $rec, $suspend = false) {
         $msg = array(
             'uid' => $buff['fromid'],

@@ -42,6 +42,7 @@ class MessageModel extends Model {
     }
 
     /**
+     * 删除离线消息
      * @param $uid
      * @throws \think\Exception
      * @throws \think\exception\PDOException

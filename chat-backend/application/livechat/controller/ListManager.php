@@ -14,6 +14,7 @@ use app\livechat\Model\GroupModel;
 class ListManager
 {
     /**
+     * 获取列表
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
@@ -38,6 +39,7 @@ class ListManager
     }
 
     /**
+     * 该用户信息
      * @param $uuid
      * @param $return
      * @throws \think\db\exception\DataNotFoundException
@@ -56,6 +58,7 @@ class ListManager
     }
 
     /**
+     * 朋友信息
      * @param $uid
      * @param $return
      * @throws \think\db\exception\DataNotFoundException
@@ -89,6 +92,7 @@ class ListManager
     }
 
     /**
+     * 群信息
      * @param $uid
      * @param $return
      * @throws \think\db\exception\DataNotFoundException

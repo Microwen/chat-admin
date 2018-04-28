@@ -13,6 +13,7 @@ require_once __DIR__ . '/../../../vendor/workerman/workerman/Lib/Constants.php';
 class Request
 {
     /**
+     * 接口入口
      * @return string
      * @throws \Exception
      */

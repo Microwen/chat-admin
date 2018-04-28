@@ -13,6 +13,7 @@ use think\Db;
 class UserManager
 {
     /**
+     * 增加用户
      * @param $arr
      * @return array
      */
@@ -29,6 +30,12 @@ class UserManager
         return $ret;
     }
 
+    /**
+     * 微信用户接口
+     * 若该用户不存在，则创建该用户
+     * @param $arr
+     * @return array
+     */
     public static function wechatUser($arr) {
         if (empty($arr['openid']) || empty($arr['avatar']) || empty($arr['username'])) {
             return array('code' => 1, '格式错误');
@@ -39,7 +46,7 @@ class UserManager
                 if (!empty($username)) {
                 $arr['username'] = $arr['username']."".rand(0000,9999);
             }
-            $user = self::add(array('username' => $arr['username'], 'avatar' => $arr['avatar']));
+            $user = self::add(array('username' => $arr['username'], 'avatar' => $arr['avatar'], 'pwd' => md5(uniqid()), 'platform' => 'Wechat'));
             UserModel::connectWechatUser($arr['openid'], $user['uid']);
         }
         return array('code' => 0, 'uuid' => UserModel::getWechatUser($arr['openid']));

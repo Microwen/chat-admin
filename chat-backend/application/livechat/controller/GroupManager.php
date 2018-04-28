@@ -40,6 +40,7 @@ class GroupManager
     }
 
     /**
+     * 移除群
      * @param $arr
      * @return int
      * @throws \think\Exception

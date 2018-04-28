@@ -19,6 +19,18 @@ class UserModel extends Model{
         //TODO
     }
 
+    public static function updateInfo() {
+        //TODO
+    }
+
+    public static function getWechatUser($openid) {
+        return Db::table('wechat_to_user') -> join('user_info', "user_info.uid=wechat_to_user.uid")
+            -> where('openid', $openid) -> value('user_info.uuid');
+    }
+
+    public static function connectWechatUser($openid, $uid) {
+        Db::table('wechat_to_user') -> insert(array('openid' => $openid, 'uid' => $uid));
+    }
     /**
      * 查询用户
      * @param $uuid
@@ -47,6 +59,10 @@ class UserModel extends Model{
      */
     public static function getUUidByUsername($username) {
         return Db::table('user_info')->where('username',$username) -> value('uuid');
+    }
+
+    public static function getUidByUsername($username) {
+        return Db::table('user_info')->where('username',$username) -> value('uid');
     }
 
     /**

@@ -35,7 +35,7 @@ class Request
             case 'msg':
                 return json(MsgManager::send(json_decode($_REQUEST['data'], true)));
             case 'add':
-                return UserManager::add(json_decode($_REQUEST['data'], true));
+                return json(UserManager::add(json_decode($_REQUEST['data'], true)));
             case 'del':
                 return UserManager::remove(json_decode($_REQUEST['data'], true));
             case 'create':
@@ -46,6 +46,8 @@ class Request
                 return GroupManager::join(json_decode($_REQUEST['data'], true));
             case 'quit':
                 return GroupManager::quit(json_decode($_REQUEST['data'], true));
+            case 'wechat':
+                return json(UserManager::wechatUser(json_decode($_REQUEST['data'], true)));
             default:
                 return json_encode(array('code' => 1, 'msg' => '未知消息'));
         }

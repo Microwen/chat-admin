@@ -16,10 +16,10 @@ class MsgManager
 {
     /**
      * @param $msg
+     * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
-     * @throws \Exception
      */
     public static function send($msg) {
         if (!self::chkMsg($msg)) {

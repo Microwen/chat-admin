@@ -30,6 +30,10 @@ class UserModel extends Model{
         //TODO
     }
 
+    public static function getAvatar($username) {
+        return Db::table('user_info') -> where('username', $username) -> value('avatar');
+    }
+
     /**
      * 根据openid获取uuid
      * @param $openid

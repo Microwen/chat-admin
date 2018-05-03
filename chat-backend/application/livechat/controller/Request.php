@@ -18,11 +18,12 @@ class Request
      * @throws \Exception
      */
     public function index() {
+        if (empty($_REQUEST['type'])) {
+            return "欢迎使用金互通IM";
+        }
         switch ($_REQUEST['type']) {
-            case 'test':
-                return session('uuid','test');
-//                echo $_SESSION['uuid'];
-                break;
+            case 'avatar':
+                return json(UserManager::getAvatar($_REQUEST['username']));
             case 'login':
                 return json(ConnectManager::login($_REQUEST['username'], $_REQUEST['pwd']));
             case 'init':

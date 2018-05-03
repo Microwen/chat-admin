@@ -1,26 +1,4 @@
 
-
-
-
-/*//////////////////////////////////////////////////////////////////
-[ FONT ]*/
-
-@font-face {
-  font-family: Montserrat-Regular;
-  src: url('../fonts/montserrat/Montserrat-Regular.ttf'); 
-}
-
-@font-face {
-  font-family: Montserrat-ExtraBold;
-  src: url('../fonts/montserrat/Montserrat-ExtraBold.ttf'); 
-}
-
-@font-face {
-  font-family: Montserrat-Bold;
-  src: url('../fonts/montserrat/Montserrat-Bold.ttf'); 
-}
-
-
 /*//////////////////////////////////////////////////////////////////
 [ RESTYLE TAG ]*/
 
@@ -32,12 +10,12 @@
 
 body, html {
 	height: 100%;
-	font-family: Montserrat-Regular, sans-serif;
+	font-family: STXihei, "Microsoft YaHei", sans-serif;
 }
 
 /*---------------------------------------------*/
 a {
-	font-family: Montserrat-Regular;
+	font-family: STXihei, "Microsoft YaHei";
 	font-size: 14px;
 	line-height: 1.7;
 	color: #666666;
@@ -63,7 +41,7 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 p {
-	font-family: Montserrat-Regular;
+	font-family: STXihei, "Microsoft YaHei";
 	font-size: 14px;
 	line-height: 1.7;
 	color: #666666;
@@ -130,7 +108,7 @@ iframe {
 /*//////////////////////////////////////////////////////////////////
 [ Utility ]*/
 .txt1 {
-  font-family: Montserrat-Regular;
+  font-family: STXihei, "Microsoft YaHei";
   font-size: 16px;
   color: #cccccc;
   line-height: 1.4;
@@ -211,7 +189,7 @@ iframe {
 }
 
 .login100-form-title {
-  font-family: Montserrat-ExtraBold;
+  font-family: STXihei, "Microsoft YaHei";
   font-size: 24px;
   color: #fff;
   line-height: 1.2;
@@ -242,7 +220,7 @@ iframe {
 }
 
 .input100 {
-  font-family: Montserrat-Bold;
+  font-family: STXihei, "Microsoft YaHei";
   font-size: 15px;
   line-height: 1.2;
   color: #333333;
@@ -335,7 +313,7 @@ iframe {
 }
 
 .login100-form-btn {
-  font-family: Montserrat-Bold;
+  font-family: STXihei, "Microsoft YaHei";
   font-size: 15px;
   line-height: 1.5;
   color: #e0e0e0;
@@ -473,7 +451,7 @@ iframe {
   right: 8px;
   pointer-events: none;
 
-  font-family: Montserrat-Bold;
+  font-family: STXihei, "Microsoft YaHei";
   color: #c80000;
   font-size: 13px;
   line-height: 1.4;

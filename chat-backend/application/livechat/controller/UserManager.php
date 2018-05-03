@@ -51,4 +51,13 @@ class UserManager
         }
         return array('code' => 0, 'uuid' => UserModel::getWechatUser($arr['openid']));
     }
+
+    public static function getAvatar($username) {
+        $avatar = UserModel::getAvatar($username);
+        if (empty($avatar)) {
+            return array('code' => 1);
+        } else {
+            return array('code' => 0, 'avatar' => $avatar);
+        }
+    }
 }
